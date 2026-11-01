@@ -1,2 +1,211 @@
 # senin-pemograman-mobile-2
 movie
+import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Movie App Task',
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: const Color(0xFF121212),
+      ),
+      home: const MovieHomePage(),
+    );
+  }
+}
+
+class MovieHomePage extends StatelessWidget {
+  const MovieHomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text(
+          'Now Playing',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 1. Now Playing Section (Carousel Slider)
+            CarouselSlider(
+              options: CarouselOptions(
+                height: 220.0,
+                autoPlay: true,
+                enlargeCenterPage: true,
+                aspectRatio: 16 / 9,
+                viewportFraction: 0.85,
+              ),
+              items: [
+                'Deadpool & Wolverine',
+                'Movie Item 2',
+                'Movie Item 3',
+              ].map((title) {
+                return Builder(
+                  builder: (BuildContext context) {
+                    return Container(
+                      width: MediaQuery.of(context).size.width,
+                      margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[850],
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      child: Stack(
+                        children: [
+                          // Background Image Placeholder
+                          Positioned.fill(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12.0),
+                              child: Container(
+                                color: Colors.grey[800],
+                                child: const Center(
+                                  child: Icon(Icons.movie, size: 50, color: Colors.white54),
+                                ),
+                              ),
+                            ),
+                          ),
+                          // Gradient Overlay & Details
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(12.0),
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(12.0)),
+                                gradient: LinearGradient(
+                                  begin: Alignment.bottomCenter,
+                                  top: Alignment.topCenter,
+                                  colors: [
+                                    Colors.black.withOpacity(0.8),
+                                    Colors.transparent,
+                                  ],
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        title,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      const Text(
+                                        'Lorem ipsum dolor sit amet...',
+                                        style: TextStyle(fontSize: 12, color: Colors.white70),
+                                      ),
+                                    ],
+                                  ),
+                                  const CircleAvatar(
+                                    radius: 14,
+                                    backgroundColor: Colors.white,
+                                    child: Icon(Icons.arrow_forward_ios, size: 12, color: Colors.black),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 20),
+
+            // 2. Section Component (Trending, Popular, Top Rated)
+            _buildMovieSection(context, 'Trending'),
+            _buildMovieSection(context, 'Popular'),
+            _buildMovieSection(context, 'Top Rated'),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: const Color(0xFF1F1F1F),
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey,
+        currentIndex: 0,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.grid_view), label: 'Genre'),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favorite'),
+        ],
+      ),
+    );
+  }
+
+  // Helper widget untuk membuat baris kategori film (Trending, Popular, dll)
+  Widget _buildMovieSection(BuildContext context, String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const Text(
+                'More',
+                style: TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          SizedBox(
+            height: 140,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 5,
+              itemBuilder: (context, index) {
+                return Container(
+                  width: 100,
+                  margin: const EdgeInsets.only(right: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[800],
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: const Center(
+                    child: Icon(Icons.image, color: Colors.white54),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
